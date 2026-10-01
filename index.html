@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <h1>JobTrack</h1>
+    <ul class="features">
+      <li><a href="">Home</a></li>
+      <li><a href="">About</a></li>
+      <li><a href="">Services</a></li>
+      <li><a href="">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main  -->
+  <main>
+    <h2>Job Application Dashboard</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="content">
+          <h3>Total:</h3>
+          <p id="totalCount"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="content">
+          <h3>Applied:</h3>
+          <p id="appliedCount"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="content">
+          <h3>Interview:</h3>
+          <p id="interviewCount"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="content">
+          <h3>Offer:</h3>
+          <p id="offerCount"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="application">
+      <h2>Add Job Application</h2>
+      <form id="FormData">
+        <label for="Company">Company Name:</label>
+        <input type="text" placeholder="Enter Company:" id="Company" required>
+
+        <label for="Role">Job Role:</label>
+        <input type="text" placeholder="Enter Your Job Role" id="Role" required>
+
+        <label for="Location">Location:</label>
+        <input type="text" placeholder="Enter Job Location" id="Location" required>
+
+        <label for="Date">Date Applied:</label>
+        <input type="date" placeholder="Applied Date" id="Date" required>
+
+        <label for="Status">Application Status:</label>
+        <select name="status" id="Status" required>
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+
+        <button type="submit">Add Application</button>
+      </form>
+    </div>
+
+    <!-- Display Box -->
+    <div class="applications-list">
+      <h2>Your Applications</h2>
+      <div class="filters">
+        <!-- Search Bar -->
+        <label for="SearchInput">Search:</label>
+        <input type="text" id="SearchInput" placeholder="Search company or role..." />
+
+        <!-- Status Filter  -->
+        <label for="StatusFilter">Filter by Status:</label>
+        <select id="StatusFilter">
+          <option value="All">All</option>
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+
+        <!-- Sorting -->
+        <label for="SortFilter">Sort by:</label>
+
+        <select id="SortFilter">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="companyAsc">Company A → Z</option>
+          <option value="companyDesc">Company Z → A</option>
+        </select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Location</th>
+            <th>Date Applied</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="TableBody">
+
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

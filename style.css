@@ -1,0 +1,414 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    color-scheme: light;
+    --ink: #18342e;
+    --muted: #687873;
+    --green: #246b56;
+    --green-dark: #194d40;
+    --line: #dce5dc;
+    --paper: #fbfaf5;
+    --surface: #ffffff;
+    --coral: #d77c5b;
+    --shadow: 0 14px 36px rgba(32, 56, 45, 0.07);
+}
+
+body {
+    max-width: 1240px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 28px 36px 56px;
+    background:
+        radial-gradient(ellipse at 8% 0%, rgba(224, 235, 216, 0.7), transparent 32rem),
+        var(--paper);
+    color: var(--ink);
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    line-height: 1.5;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 58px;
+    margin-bottom: 38px;
+    padding: 12px 18px;
+    border: 1px solid rgba(25, 77, 64, 0.2);
+    border-radius: 8px;
+    background: var(--green-dark);
+    box-shadow: 0 8px 22px rgba(25, 77, 64, 0.14);
+}
+
+nav h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: #fff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+nav h1::before {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--coral);
+    content: "";
+    transform: rotate(45deg);
+}
+
+.features {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.features a {
+    position: relative;
+    display: block;
+    padding: 8px 11px;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 160ms ease, background 160ms ease;
+}
+
+.features a:hover,
+.features a:focus-visible {
+    outline: none;
+    background: rgba(255, 255, 255, 0.13);
+    color: #fff;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+main > h2 {
+    margin: 0 0 -8px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 4vw, 2.45rem);
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 5px 16px rgba(32, 56, 45, 0.035);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.card::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--green);
+    content: "";
+}
+
+.card:nth-child(2)::before {
+    background: #6a9b71;
+}
+
+.card:nth-child(3)::before {
+    background: #d99b48;
+}
+
+.card:nth-child(4)::before {
+    background: var(--coral);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.card h3 {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.card p {
+    min-height: 48px;
+    margin: 8px 0 0;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.application,
+.applications-list {
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.application h2,
+.applications-list h2 {
+    margin: 0 0 20px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+}
+
+#FormData {
+    display: grid;
+    grid-template-columns: max-content minmax(120px, 1fr) max-content minmax(120px, 1fr);
+    align-items: center;
+    gap: 14px 16px;
+}
+
+#FormData label {
+    color: #425d52;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+#FormData input,
+#FormData select,
+.filters input,
+.filters select {
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #d2ddd4;
+    border-radius: 5px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+#FormData input::placeholder,
+.filters input::placeholder {
+    color: #9aa8a0;
+}
+
+#FormData input:focus,
+#FormData select:focus,
+.filters input:focus,
+.filters select:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(36, 107, 86, 0.13);
+}
+
+#FormData button {
+    grid-column: 1 / -1;
+    min-height: 46px;
+    margin-top: 4px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--green);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+}
+
+#FormData button:hover {
+    transform: translateY(-1px);
+    background: var(--green-dark);
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    margin-bottom: 20px;
+}
+
+.filters label {
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.filters input {
+    flex: 1 1 190px;
+}
+
+.filters select {
+    flex: 0 1 auto;
+}
+
+.applications-list table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.applications-list th,
+.applications-list td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #e8ede8;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.applications-list th {
+    background: #f2f6f0;
+    color: #476256;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.applications-list tbody tr {
+    transition: background 140ms ease;
+}
+
+.applications-list tbody tr:hover {
+    background: #f8faf6;
+}
+
+.applications-list td:nth-child(5) {
+    color: var(--green-dark);
+    font-weight: 700;
+}
+
+.applications-list td button {
+    margin: 2px 5px 2px 0;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--green-dark);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease;
+}
+
+.applications-list td .edit-btn:hover {
+    border-color: #a8c4b2;
+    background: #eef5ef;
+}
+
+.applications-list td .delete-btn {
+    color: #a94e3d;
+}
+
+.applications-list td .delete-btn:hover {
+    border-color: #e3b9ae;
+    background: #fff3ef;
+}
+
+@media (max-width: 860px) {
+    body {
+        padding: 24px 22px 40px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #FormData {
+        grid-template-columns: max-content minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 16px 32px;
+    }
+
+    nav {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 28px;
+    }
+
+    .features {
+        flex-wrap: wrap;
+        gap: 10px 20px;
+    }
+
+    main {
+        gap: 18px;
+    }
+
+    .cards {
+        gap: 10px;
+    }
+
+    .card {
+        padding: 17px 16px;
+    }
+
+    .card p {
+        font-size: 1.9rem;
+    }
+
+    .application,
+    .applications-list {
+        padding: 20px 16px;
+    }
+
+    #FormData {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    #FormData label:not(:first-child) {
+        margin-top: 8px;
+    }
+
+    .applications-list {
+        overflow-x: auto;
+    }
+
+    .applications-list table {
+        min-width: 690px;
+    }
+
+    .filters input {
+        flex-basis: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
