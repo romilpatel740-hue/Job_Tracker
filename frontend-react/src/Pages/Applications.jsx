@@ -3,8 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import useApplications from "../hooks/useApplication";
 
 function Applications() {
-  const { applications, deleteApplication } = useApplications();
-
+  const { applications, deleteApplication, loading, error } = useApplications();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortOption, setSortOption] = useState("default");
@@ -45,48 +44,62 @@ function Applications() {
   const sortedApplications = [...filteredApplications];
 
   if (sortOption === "company-asc") {
-    sortedApplications.sort((a, b) =>
-      a.company.localeCompare(b.company)
-    );
+    sortedApplications.sort((a, b) => a.company.localeCompare(b.company));
   }
 
   if (sortOption === "company-desc") {
-    sortedApplications.sort((a, b) =>
-      b.company.localeCompare(a.company)
-    );
+    sortedApplications.sort((a, b) => b.company.localeCompare(a.company));
   }
 
   if (sortOption === "newest") {
-    sortedApplications.sort((a, b) => b.id - a.id);
+    sortedApplications.sort(
+      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+    );
   }
+
+  if (loading) {
+  return (
+    <div className="flex min-h-[400px] items-center justify-center">
+      <p className="text-lg text-slate-500">
+        Loading applications...
+      </p>
+    </div>
+  );
+}
+
+if (error) {
+  return (
+    <div className="flex min-h-[400px] items-center justify-center">
+      <p className="text-lg text-red-500">
+        {error}
+      </p>
+    </div>
+  );
+}
 
   return (
     <section className="space-y-7">
-
       {/* Page Header */}
       <header className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 p-6 text-white shadow-xl shadow-slate-900/10 sm:p-8">
-
         {/* Background Effects */}
         <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
         <div className="absolute -bottom-24 left-1/3 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
 
         <div className="relative z-10">
-
           <span className="inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] !text-indigo-200">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
             Application pipeline
           </span>
 
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-
             <div>
               <h1 className="text-3xl font-extrabold tracking-tight !text-white sm:text-4xl">
                 Applications
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 !text-slate-300 sm:text-base">
-                Manage, search, filter, and organize all your job
-                applications from one place.
+                Manage, search, filter, and organize all your job applications
+                from one place.
               </p>
             </div>
 
@@ -96,14 +109,12 @@ function Applications() {
             >
               + Add Application
             </Link>
-
           </div>
         </div>
       </header>
 
       {/* Search / Filter / Sort */}
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
         <div className="mb-5">
           <span className="text-[10px] font-bold uppercase tracking-[0.18em] !text-indigo-600">
             Manage pipeline
@@ -119,7 +130,6 @@ function Applications() {
         </div>
 
         <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr_1fr]">
-
           {/* Search */}
           <div className="relative">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 !text-slate-400">
@@ -159,20 +169,16 @@ function Applications() {
             <option value="company-desc">Company Z-A</option>
             <option value="newest">Newest First</option>
           </select>
-
         </div>
 
         {/* Result Count */}
         <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
-
           <p className="text-xs font-medium !text-slate-500">
             Showing{" "}
             <span className="font-bold !text-slate-900">
               {sortedApplications.length}
             </span>{" "}
-            {sortedApplications.length === 1
-              ? "application"
-              : "applications"}
+            {sortedApplications.length === 1 ? "application" : "applications"}
           </p>
 
           {(search || filterStatus !== "all" || sortOption !== "default") && (
@@ -188,16 +194,13 @@ function Applications() {
               Reset filters
             </button>
           )}
-
         </div>
       </div>
 
       {/* Applications */}
       {sortedApplications.length === 0 ? (
-
         /* Empty State */
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm sm:p-14">
-
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-xl font-bold !text-indigo-600">
             +
           </div>
@@ -207,13 +210,11 @@ function Applications() {
           </h2>
 
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 !text-slate-500">
-            We couldn't find any applications matching your current
-            search or filter. Try changing your filters or add a new
-            application.
+            We couldn't find any applications matching your current search or
+            filter. Try changing your filters or add a new application.
           </p>
 
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-
             <button
               type="button"
               onClick={() => {
@@ -232,37 +233,28 @@ function Applications() {
             >
               + Add Application
             </Link>
-
           </div>
         </div>
-
       ) : (
-
         /* Application Cards */
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-
           {sortedApplications.map((app) => {
-
-            const currentStatus =
-              statusStyle[app.status] || {
-                badge: "bg-slate-100 !text-slate-700 ring-slate-200",
-                dot: "bg-slate-500",
-              };
+            const currentStatus = statusStyle[app.status] || {
+              badge: "bg-slate-100 !text-slate-700 ring-slate-200",
+              dot: "bg-slate-500",
+            };
 
             return (
               <article
-                key={app.id}
+                key={app._id}
                 className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5"
               >
-
                 {/* Top Accent */}
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-500 via-cyan-500 to-violet-500 opacity-0 transition group-hover:opacity-100" />
 
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-4">
-
                   <div className="flex min-w-0 items-center gap-3">
-
                     {/* Company Initial */}
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-base font-black !text-white shadow-lg shadow-indigo-500/20">
                       {app.company?.charAt(0)?.toUpperCase() || "J"}
@@ -277,7 +269,6 @@ function Applications() {
                         {app.role}
                       </p>
                     </div>
-
                   </div>
 
                   {/* Status */}
@@ -289,14 +280,11 @@ function Applications() {
                     />
                     {app.status}
                   </span>
-
                 </div>
 
                 {/* Location */}
                 <div className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5">
-                  <span className="text-sm !text-slate-400">
-                    📍
-                  </span>
+                  <span className="text-sm !text-slate-400">📍</span>
 
                   <span className="truncate text-sm font-medium !text-slate-600">
                     {app.location}
@@ -308,16 +296,15 @@ function Applications() {
 
                 {/* Actions */}
                 <div className="grid grid-cols-3 gap-2">
-
                   <Link
-                    to={`/applications/${app.id}`}
+                    to={`/applications/${app._id}`}
                     className="inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2.5 text-xs font-bold !text-slate-700 transition hover:bg-slate-200"
                   >
                     View
                   </Link>
 
                   <Link
-                    to={`/applications/${app.id}/edit`}
+                    to={`/applications/${app._id}/edit`}
                     className="inline-flex items-center justify-center rounded-xl bg-indigo-50 px-3 py-2.5 text-xs font-bold !text-indigo-700 transition hover:bg-indigo-100"
                   >
                     Edit
@@ -326,17 +313,14 @@ function Applications() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-xl bg-rose-50 px-3 py-2.5 text-xs font-bold !text-rose-700 transition hover:bg-rose-100"
-                    onClick={() => deleteApplication(app.id)}
+                    onClick={() => deleteApplication(app._id)}
                   >
                     Delete
                   </button>
-
                 </div>
-
               </article>
             );
           })}
-
         </div>
       )}
 

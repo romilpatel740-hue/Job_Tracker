@@ -226,7 +226,7 @@ function Dashboard() {
               {applications.slice(0, 4).map((app) => (
 
                 <li
-                  key={app.id}
+                  key={app._id}
                   className="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 transition duration-200 hover:border-indigo-200 hover:bg-indigo-50/30 sm:flex-row sm:items-center sm:justify-between"
                 >
 

@@ -43,7 +43,7 @@ function EditApplication() {
       return;
     }
 
-    updateApplication(Number(id), {
+    updateApplication(id, {
       company: company.trim(),
       role: role.trim(),
       location: location.trim(),
