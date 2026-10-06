@@ -2,7 +2,7 @@ import { createContext, useEffect, useReducer, useState } from "react";
 
 const ApplicationContext = createContext();
 
-const API_URL = "http://localhost:5001/api/applications";
+const API_URL = "https://jobtracker-backend-eiaz.onrender.com/api/applications";
 
 function ApplicationReducer(state, action) {
   switch (action.type) {
