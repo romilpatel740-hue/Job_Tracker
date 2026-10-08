@@ -1,61 +1,56 @@
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
 export async function testAI(req, res) {
   try {
-    const response = await fetch(
-      "http://localhost:11434/api/generate",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "llama3.2:3b",
-          prompt:
-            "Explain what a REST API is in one simple sentence.",
-          stream: false,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Ollama request failed with status ${response.status}`
-      );
-    }
-
-    const data = await response.json();
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents:
+        "Explain what a REST API is in one simple sentence.",
+    });
 
     res.status(200).json({
-      message: data.response,
+      message: response.text,
     });
   } catch (error) {
-    console.error("Ollama API error:", error);
+    console.error("Gemini test error:", error);
 
     res.status(500).json({
-      message: "AI request failed",
+      message: "Gemini AI request failed",
       error: error.message,
     });
   }
 }
 
-export async function analyzeJobDescription(req, res) {
+export async function analyzeJobDescription(
+  req,
+  res
+) {
   try {
     const { jobDescription } = req.body;
 
-    if (!jobDescription || !jobDescription.trim()) {
+    if (
+      !jobDescription ||
+      !jobDescription.trim()
+    ) {
       return res.status(400).json({
         message: "Job description is required",
       });
     }
 
     const prompt = `
-You are a job description analyzer.
+You are an AI job description analyzer.
 
 Analyze the following job description.
 
 Return ONLY valid JSON.
+
 Do not include markdown.
 Do not include code fences.
-Do not include any explanation before or after the JSON.
+Do not include explanations.
 
 Use exactly this structure:
 
@@ -68,61 +63,53 @@ Use exactly this structure:
 }
 
 Rules:
-- "skills" should contain important technical skills.
-- "keywords" should contain important job-related keywords.
-- "experience" should contain the experience requirement.
-- "aiSkills" should contain AI, GenAI, LLM, or AI-related skills mentioned in the job description.
-- "preparationTopics" should contain topics the candidate should prepare based on the job description.
-- If a category has no relevant information, return an empty array or empty string.
-- Do not invent requirements that are not reasonably supported by the job description.
+
+- "skills" should contain important technical skills
+  mentioned in the job description.
+- "keywords" should contain important technical
+  keywords useful for ATS matching.
+- "experience" should describe the required experience
+  level if mentioned.
+- "aiSkills" should contain AI, GenAI, LLM, prompt
+  engineering, automation, or AI-related technologies
+  mentioned in the job description.
+- "preparationTopics" should contain useful topics
+  the candidate should prepare based on the job description.
+- Do not include soft skills unless they are directly
+  related to a technical requirement.
+- Do not invent requirements.
 
 Job Description:
+
 ${jobDescription}
 `;
 
-    const response = await fetch(
-      "http://localhost:11434/api/generate",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const response =
+      await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
         },
-        body: JSON.stringify({
-          model: "llama3.2:3b",
-          prompt,
-          stream: false,
-          format: "json",
-        }),
-      }
-    );
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Ollama request failed with status ${response.status}`
-      );
-    }
-
-    const data = await response.json();
-
-    let analysis;
+    let aiResult;
 
     try {
-      analysis = JSON.parse(data.response);
+      aiResult = JSON.parse(response.text);
     } catch (error) {
       console.error(
-        "AI returned invalid JSON:",
-        data.response
+        "Gemini returned invalid JSON:",
+        response.text
       );
 
       return res.status(500).json({
-        message: "AI returned an invalid JSON response",
-        rawResponse: data.response,
+        message:
+          "AI returned an invalid JSON response",
       });
     }
 
-    res.status(200).json({
-      analysis,
-    });
+    res.status(200).json(aiResult);
   } catch (error) {
     console.error(
       "Job description analysis error:",
@@ -130,7 +117,8 @@ ${jobDescription}
     );
 
     res.status(500).json({
-      message: "Failed to analyze job description",
+      message:
+        "Failed to analyze job description",
       error: error.message,
     });
   }
@@ -201,47 +189,32 @@ Rules:
 - The backend will perform the matching and calculation.
 
 Job Description:
+
 ${jobDescription}
 `;
 
-    const response = await fetch(
-      "http://localhost:11434/api/generate",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const response =
+      await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
         },
-        body: JSON.stringify({
-          model: "llama3.2:3b",
-          prompt,
-          stream: false,
-          format: "json",
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Ollama request failed with status ${response.status}`
-      );
-    }
-
-    const data = await response.json();
+      });
 
     let aiResult;
 
     try {
-      aiResult = JSON.parse(data.response);
+      aiResult = JSON.parse(response.text);
     } catch (error) {
       console.error(
-        "AI returned invalid JSON:",
-        data.response
+        "Gemini returned invalid JSON:",
+        response.text
       );
 
       return res.status(500).json({
         message:
           "AI returned an invalid JSON response",
-        rawResponse: data.response,
       });
     }
 

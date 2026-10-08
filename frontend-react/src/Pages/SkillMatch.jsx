@@ -41,7 +41,7 @@ function SkillMatch() {
       setMatchResult(null);
 
       const response = await fetch(
-        "http://localhost:5001/api/ai/match-skills",
+        "https://jobtracker-backend-eiaz.onrender.com/api/ai/match-skills",
         {
           method: "POST",
 

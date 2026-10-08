@@ -18,7 +18,7 @@ function AIAnalyzer() {
       setAnalysis(null);
 
       const response = await fetch(
-        "http://localhost:5001/api/ai/analyze",
+        "https://jobtracker-backend-eiaz.onrender.com/api/ai/analyze",
         {
           method: "POST",
           headers: {
