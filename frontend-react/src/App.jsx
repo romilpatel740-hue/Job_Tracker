@@ -7,7 +7,7 @@ import About from "./Pages/About";
 import ApplicationDetails from "./Pages/ApplicationDetails";
 import NotFound from "./Pages/NotFound";
 import Navbar from "./Navbar";
-import AIAnalyzer from "./pages/AIAnalyzer";
+import AIAnalyzer from "./Pages/AIAnalyzer";
 import EditApplication from "./Pages/EditApplication";
 import Profile from "./Pages/Profile";
 import SkillMatch from "./Pages/SkillMatch";
