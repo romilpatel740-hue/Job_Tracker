@@ -8,20 +8,20 @@ function Navbar({ title }) {
         {/* Logo */}
         <NavLink
           to="/"
-          className="group flex shrink-0 items-center gap-3 !text-white"
+          className="group flex shrink-0 items-center gap-3 text-white"
         >
           <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-400 via-indigo-500 to-violet-600 text-sm font-black !text-white shadow-lg shadow-indigo-500/30 transition duration-300 group-hover:scale-105">
-            <span className="relative z-10 !text-white">JT</span>
+            <span className="relative z-10 text-white">JT</span>
 
             <div className="absolute inset-0 bg-white/10 opacity-0 transition group-hover:opacity-100" />
           </div>
 
           <div className="hidden leading-tight sm:block">
-            <div className="text-base font-bold tracking-tight !text-white">
+            <div className="text-base font-bold tracking-tight text-white">
               {title}
             </div>
 
-            <div className="text-[11px] font-medium uppercase tracking-[0.16em] !text-slate-400">
+            <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-400">
               Job tracker
             </div>
           </div>
@@ -33,6 +33,8 @@ function Navbar({ title }) {
             ["/", "Dashboard"],
             ["/applications", "Applications"],
             ["/addApplications", "Add Application"],
+            ["/profile", "Profile"],
+            ["/skill-match", "AI Skill Match"],
             ["/about", "About"],
           ].map(([to, label]) => (
             <NavLink
@@ -41,8 +43,8 @@ function Navbar({ title }) {
               className={({ isActive }) =>
                 `whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-all duration-200 sm:px-4 sm:text-sm ${
                   isActive
-                    ? "!bg-white !text-slate-950 shadow-md shadow-black/10"
-                    : "!bg-transparent !text-slate-300 hover:!bg-white/10 hover:!text-white"
+                    ? "bg-white text-slate-950 shadow-md shadow-black/10"
+                    : "bg-transparent text-slate-300 hover:bg-white/10 hover:text-white"
                 }`
               }
             >

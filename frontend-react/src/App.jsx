@@ -7,7 +7,10 @@ import About from "./Pages/About";
 import ApplicationDetails from "./Pages/ApplicationDetails";
 import NotFound from "./Pages/NotFound";
 import Navbar from "./Navbar";
+import AIAnalyzer from "./pages/AIAnalyzer";
 import EditApplication from "./Pages/EditApplication";
+import Profile from "./Pages/Profile";
+import SkillMatch from "./Pages/SkillMatch";
 
 function App() {
   return (
@@ -23,15 +26,18 @@ function App() {
               <Route path=":id" element={<ApplicationDetails />} />
             </Route>
 
-            <Route
-              path="/addApplications"
-              element={<AddApplication />}
-            />
+            <Route path="/addApplications" element={<AddApplication />} />
 
             <Route
               path="/applications/:id/edit"
               element={<EditApplication />}
             />
+
+            <Route path="/ai-analyzer" element={<AIAnalyzer />} />
+
+            <Route path="/profile" element={<Profile />} />
+
+            <Route path="/skill-match" element={<SkillMatch />} />
 
             <Route path="/about" element={<About />} />
 
