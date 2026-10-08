@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({
 export async function testAI(req, res) {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.5-flash-lite",
       contents:
         "Explain what a REST API is in one simple sentence.",
     });
@@ -86,7 +86,7 @@ ${jobDescription}
 
     const response =
       await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+        model: "gemini-3.5-flash-lite",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
@@ -195,7 +195,7 @@ ${jobDescription}
 
     const response =
       await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+        model: "gemini-3.5-flash-lite",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
