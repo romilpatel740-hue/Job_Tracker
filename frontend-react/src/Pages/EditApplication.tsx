@@ -1,56 +1,57 @@
-import { useState } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useApplication from "../hooks/useApplication";
+import type { JobStatus } from "../types/application";
 
 function EditApplication() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const {
-    getApplicationById,
-    updateApplication,
-  } = useApplication();
+  const { getApplicationById, updateApplication } = useApplication();
 
   const application = getApplicationById(id);
 
-  const [company, setCompany] = useState(
-    application?.company || ""
-  );
-
-  const [role, setRole] = useState(
-    application?.role || ""
-  );
-
-  const [location, setLocation] = useState(
-    application?.location || ""
-  );
-
-  const [status, setStatus] = useState(
-    application?.status || "applied"
+  const [company, setCompany] = useState(application?.company || "");
+  const [role, setRole] = useState(application?.role || "");
+  const [location, setLocation] = useState(application?.location || "");
+  const [status, setStatus] = useState<JobStatus>(
+    application?.status || "applied",
   );
 
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
 
-    if (
-      !company.trim() ||
-      !role.trim() ||
-      !location.trim()
-    ) {
+    if (!id) {
+      setError("Application ID is missing.");
+      return;
+    }
+
+    if (!company.trim() || !role.trim() || !location.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
 
-    updateApplication(id, {
-      company: company.trim(),
-      role: role.trim(),
-      location: location.trim(),
-      status,
-    });
+    try {
+      await updateApplication(id, {
+        company: company.trim(),
+        role: role.trim(),
+        location: location.trim(),
+        status,
+      });
 
-    navigate("/applications");
+      navigate("/applications");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to update application. Please try again.";
+
+      setError(message);
+    }
   }
 
   if (!application) {
@@ -61,19 +62,18 @@ function EditApplication() {
             !
           </div>
 
-          <h2 className="mt-5 text-xl font-bold !text-slate-900">
+          <h2 className="mt-5 text-xl font-bold text-slate-900">
             Application not found
           </h2>
 
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 !text-slate-500">
-            The application you're trying to edit could not
-            be found.
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+            The application you're trying to edit could not be found.
           </p>
 
           <button
             type="button"
             onClick={() => navigate("/applications")}
-            className="mt-6 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold !text-white transition hover:bg-slate-800"
+            className="mt-6 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Back to Applications
           </button>
@@ -97,13 +97,13 @@ function EditApplication() {
           </span>
 
           <div className="mt-4">
-            <h1 className="text-3xl font-extrabold tracking-tight !text-white sm:text-4xl">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               Edit Application
             </h1>
 
-            <p className="mt-3 max-w-2xl text-sm leading-6 !text-slate-300 sm:text-base">
-              Update the details of your job application and
-              keep your pipeline accurate.
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
+              Update the details of your job application and keep your pipeline
+              accurate.
             </p>
           </div>
         </div>
@@ -116,24 +116,21 @@ function EditApplication() {
             Application details
           </span>
 
-          <h2 className="mt-1 text-xl font-bold tracking-tight !text-slate-950">
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">
             Update opportunity information
           </h2>
 
-          <p className="mt-1 text-sm !text-slate-500">
-            Make your changes below and save the updated
-            application.
+          <p className="mt-1 text-sm  text-slate-500">
+            Make your changes below and save the updated application.
           </p>
         </div>
 
         {/* Error */}
         {error && (
           <div className="mt-5 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3">
-            <span className="mt-0.5 !text-rose-600">⚠</span>
+            <span className="mt-0.5 text-rose-600">⚠</span>
 
-            <p className="text-sm font-medium !text-rose-700">
-              {error}
-            </p>
+            <p className="text-sm font-medium text-rose-700">{error}</p>
           </div>
         )}
 
@@ -145,17 +142,17 @@ function EditApplication() {
           <div className="space-y-2">
             <label
               htmlFor="company"
-              className="block text-sm font-semibold !text-slate-700"
+              className="block text-sm font-semibold text-slate-700"
             >
               Company
-              <span className="ml-1 !text-rose-500">*</span>
+              <span className="ml-1 text-rose-500">*</span>
             </label>
 
             <input
               id="company"
               type="text"
               value={company}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setCompany(event.target.value);
                 setError("");
               }}
@@ -168,17 +165,17 @@ function EditApplication() {
           <div className="space-y-2">
             <label
               htmlFor="role"
-              className="block text-sm font-semibold !text-slate-700"
+              className="block text-sm font-semibold text-slate-700"
             >
               Job Role
-              <span className="ml-1 !text-rose-500">*</span>
+              <span className="ml-1 text-rose-500">*</span>
             </label>
 
             <input
               id="role"
               type="text"
               value={role}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setRole(event.target.value);
                 setError("");
               }}
@@ -191,14 +188,14 @@ function EditApplication() {
           <div className="space-y-2 md:col-span-2">
             <label
               htmlFor="location"
-              className="block text-sm font-semibold !text-slate-700"
+              className="block text-sm font-semibold text-slate-700"
             >
               Location
-              <span className="ml-1 !text-rose-500">*</span>
+              <span className="ml-1 text-rose-500">*</span>
             </label>
 
             <div className="relative">
-              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm !text-slate-400">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400">
                 📍
               </span>
 
@@ -206,7 +203,7 @@ function EditApplication() {
                 id="location"
                 type="text"
                 value={location}
-                onChange={(event) => {
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   setLocation(event.target.value);
                   setError("");
                 }}
@@ -228,7 +225,9 @@ function EditApplication() {
             <select
               id="status"
               value={status}
-              onChange={(event) => setStatus(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                setStatus(event.target.value as JobStatus)
+              }
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium !text-slate-700 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
             >
               <option value="applied">Applied</option>

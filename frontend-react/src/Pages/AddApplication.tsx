@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import useApplication from "../hooks/useApplication";
+import type { JobStatus, NewJobApplication } from "../types/application";
 
 function AddApplication() {
   const navigate = useNavigate();
@@ -9,29 +10,36 @@ function AddApplication() {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [location, setLocation] = useState("");
-  const [status, setStatus] = useState("applied");
+  const [status, setStatus] = useState<JobStatus>("applied");
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
 
-    if (
-      !company.trim() ||
-      !role.trim() ||
-      !location.trim()
-    ) {
+    if (!company.trim() || !role.trim() || !location.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
 
-    addApplication({
+    const newApplication: NewJobApplication = {
       company: company.trim(),
       role: role.trim(),
       location: location.trim(),
       status,
-    });
+    };
+    try {
+      await addApplication(newApplication);
+      navigate("/applications");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to add application. Please try again.";
 
-    navigate("/applications");
+      setError(message);
+    }
   }
 
   return (
@@ -54,8 +62,8 @@ function AddApplication() {
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-6 !text-slate-300 sm:text-base">
-              Add a new job opportunity to your application
-              pipeline and keep your job search organized.
+              Add a new job opportunity to your application pipeline and keep
+              your job search organized.
             </p>
           </div>
         </div>
@@ -82,9 +90,7 @@ function AddApplication() {
           <div className="mt-5 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3">
             <span className="mt-0.5 !text-rose-600">⚠</span>
 
-            <p className="text-sm font-medium !text-rose-700">
-              {error}
-            </p>
+            <p className="text-sm font-medium !text-rose-700">{error}</p>
           </div>
         )}
 
@@ -106,7 +112,7 @@ function AddApplication() {
               id="company"
               type="text"
               value={company}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setCompany(event.target.value);
                 setError("");
               }}
@@ -129,7 +135,7 @@ function AddApplication() {
               id="role"
               type="text"
               value={role}
-              onChange={(event) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 setRole(event.target.value);
                 setError("");
               }}
@@ -157,7 +163,7 @@ function AddApplication() {
                 id="location"
                 type="text"
                 value={location}
-                onChange={(event) => {
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   setLocation(event.target.value);
                   setError("");
                 }}
@@ -179,7 +185,9 @@ function AddApplication() {
             <select
               id="status"
               value={status}
-              onChange={(event) => setStatus(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+                setStatus(event.target.value as JobStatus)
+              }
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium !text-slate-700 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
             >
               <option value="applied">Applied</option>

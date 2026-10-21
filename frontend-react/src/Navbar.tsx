@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
 
-function Navbar({ title }) {
+type NavbarProps = {
+  title: string;
+};
+
+function Navbar({ title }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950 shadow-lg shadow-slate-950/5 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">

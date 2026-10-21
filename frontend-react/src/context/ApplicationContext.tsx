@@ -1,10 +1,30 @@
-import { createContext, useEffect, useReducer, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+  type ReactNode,
+} from "react";
 
-const ApplicationContext = createContext();
+import type {
+  ApiErrorResponse,
+  ApplicationAction,
+  ApplicationApiResponse,
+  ApplicationContextValue,
+  JobApplication,
+  NewJobApplication,
+} from "../types/application";
+
+const ApplicationContext = createContext<ApplicationContextValue | undefined>(
+  undefined,
+);
 
 const API_URL = "https://jobtracker-backend-eiaz.onrender.com/api/applications";
 
-function ApplicationReducer(state, action) {
+function ApplicationReducer(
+  state: JobApplication[],
+  action: ApplicationAction,
+): JobApplication[] {
   switch (action.type) {
     case "SET_APPLICATIONS":
       return action.payload;
@@ -25,9 +45,11 @@ function ApplicationReducer(state, action) {
   }
 }
 
-function ApplicationProvider({ children }) {
-  const [applications, dispatch] = useReducer(ApplicationReducer, []);
-
+function ApplicationProvider({ children }: { children: ReactNode }) {
+  const [applications, dispatch] = useReducer(
+    ApplicationReducer,
+    [] as JobApplication[],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -44,14 +66,22 @@ function ApplicationProvider({ children }) {
           throw new Error("Failed to fetch applications");
         }
 
-        const data = await response.json();
+        const data: unknown = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid applications response");
+        }
 
         dispatch({
           type: "SET_APPLICATIONS",
-          payload: data,
+          payload: data as JobApplication[],
         });
-      } catch (error) {
-        setError(error.message);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred";
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -61,7 +91,7 @@ function ApplicationProvider({ children }) {
   }, []);
 
   // POST application
-  async function addApplication(application) {
+  async function addApplication(application: NewJobApplication): Promise<void> {
     try {
       setError("");
 
@@ -73,24 +103,36 @@ function ApplicationProvider({ children }) {
         body: JSON.stringify(application),
       });
 
-      const data = await response.json();
+      const data: ApplicationApiResponse | ApiErrorResponse =
+        await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to create application");
+      }
+
+      if (!("application" in data)) {
+        throw new Error("Invalid application response");
       }
 
       dispatch({
         type: "ADD_APPLICATION",
         payload: data.application,
       });
-    } catch (error) {
-      setError(error.message);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setError(message);
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
   // PUT application
-  async function updateApplication(id, updatedData) {
+  async function updateApplication(
+    id: string,
+    updatedData: Partial<NewJobApplication>,
+  ): Promise<void> {
     try {
       setError("");
 
@@ -102,24 +144,31 @@ function ApplicationProvider({ children }) {
         body: JSON.stringify(updatedData),
       });
 
-      const data = await response.json();
+      const data: ApplicationApiResponse | ApiErrorResponse =
+        await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to update application");
+      }
+
+      if (!("application" in data)) {
+        throw new Error("Invalid application response");
       }
 
       dispatch({
         type: "UPDATE_APPLICATION",
         payload: data.application,
       });
-    } catch (error) {
-      setError(error.message);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setError(message);
       throw error;
     }
   }
 
   // DELETE application
-  async function deleteApplication(id) {
+  async function deleteApplication(id: string): Promise<void> {
     try {
       setError("");
 
@@ -127,7 +176,8 @@ function ApplicationProvider({ children }) {
         method: "DELETE",
       });
 
-      const data = await response.json();
+      const data: ApiErrorResponse =
+        await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to delete application");
@@ -137,9 +187,10 @@ function ApplicationProvider({ children }) {
         type: "DELETE_APPLICATION",
         payload: id,
       });
-    } catch (error) {
-      setError(error.message);
-      throw error;
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setError(message);
     }
   }
 
