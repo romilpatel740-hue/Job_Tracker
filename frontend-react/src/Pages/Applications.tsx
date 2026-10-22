@@ -1,14 +1,32 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import useApplications from "../hooks/useApplication";
+import type { JobStatus, JobApplication } from "../types/application";
+
+type FilterStatus = "all" | JobStatus;
+
+type SortOption =
+  | "default"
+  | "company-asc"
+  | "company-desc"
+  | "newest";
+
+type StatusStyle = {
+  badge: string;
+  dot: string;
+};
+
+type SortableApplication = JobApplication & {
+  createdAt?: string | number | Date;
+};
 
 function Applications() {
   const { applications, deleteApplication, loading, error } = useApplications();
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [sortOption, setSortOption] = useState("default");
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("default");
 
-  const statusStyle = {
+  const statusStyle: Record<JobStatus, StatusStyle> = {
     applied: {
       badge: "bg-sky-50 !text-sky-700 ring-sky-200",
       dot: "bg-sky-500",
@@ -41,7 +59,7 @@ function Applications() {
     return matchesSearch && matchesStatus;
   });
 
-  const sortedApplications = [...filteredApplications];
+  const sortedApplications: SortableApplication[] = [...filteredApplications];
 
   if (sortOption === "company-asc") {
     sortedApplications.sort((a, b) => a.company.localeCompare(b.company));
@@ -53,7 +71,7 @@ function Applications() {
 
   if (sortOption === "newest") {
     sortedApplications.sort(
-      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+      (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime(),
     );
   }
 
@@ -148,7 +166,7 @@ if (error) {
           {/* Status Filter */}
           <select
             value={filterStatus}
-            onChange={(event) => setFilterStatus(event.target.value)}
+            onChange={(event) => setFilterStatus(event.target.value as FilterStatus)}
             className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium !text-slate-700 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
           >
             <option value="all">All Statuses</option>
@@ -161,7 +179,7 @@ if (error) {
           {/* Sort */}
           <select
             value={sortOption}
-            onChange={(event) => setSortOption(event.target.value)}
+            onChange={(event) => setSortOption(event.target.value as SortOption)}
             className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium !text-slate-700 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
           >
             <option value="default">Default Order</option>

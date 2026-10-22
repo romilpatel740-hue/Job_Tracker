@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom";
 import useApplications from "../hooks/useApplication";
 import { Timeline } from "@/components/ui/timeline";
+import type { JobStatus } from "../types/application";
 
 function ApplicationDetails() {
   const { id } = useParams();
   const { getApplicationById } = useApplications();
   const application = getApplicationById(id);
 
-  const statusStyle = {
+  const statusStyle: Record<JobStatus, { wrapper: string; badge: string; dot: string }> = {
     applied: {
       wrapper: "border-sky-200 bg-sky-50",
       badge: "bg-sky-100 text-sky-700 border-sky-200",
@@ -33,8 +34,9 @@ function ApplicationDetails() {
     },
   };
 
-  const currentStatus =
-    statusStyle[application?.status] || {
+const currentStatus = application
+  ? statusStyle[application.status]
+  : {
       wrapper: "border-slate-200 bg-slate-50",
       badge: "bg-slate-100 text-slate-700 border-slate-200",
       dot: "bg-slate-500",

@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import type { JobStatus } from "../types/application";
 import {
   ApplicationContext,
 } from "../context/ApplicationContext";
@@ -14,13 +15,14 @@ function useApplications() {
 
   const { applications } = context;
 
-  function getApplicationById(id) {
+
+  function getApplicationById(id: string | undefined) {
     return applications.find(
       (app) => String(app._id) === String(id)
     );
   }
 
-  function getApplicationsByStatus(status) {
+  function getApplicationsByStatus(status: JobStatus) {
     return applications.filter(
       (app) =>
         app.status.toLowerCase() ===

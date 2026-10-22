@@ -1,13 +1,24 @@
 import { useScroll, useTransform, motion } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+type TimelineItem = {
+  title: string;
+  content: ReactNode;
+};
+
+type TimelineProps = {
+  data: TimelineItem[];
+  title?: string;
+  description?: string;
+};
 
 export const Timeline = ({
   data,
   title = "Application Overview",
   description = "A clear overview of this job application.",
-}) => {
-  const ref = useRef(null);
-  const containerRef = useRef(null);
+}: TimelineProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
@@ -22,17 +33,9 @@ export const Timeline = ({
     offset: ["start 10%", "end 50%"],
   });
 
-  const heightTransform = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, height]
-  );
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
 
-  const opacityTransform = useTransform(
-    scrollYProgress,
-    [0, 0.1],
-    [0, 1]
-  );
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
     <div
@@ -56,10 +59,7 @@ export const Timeline = ({
       </div>
 
       {/* Timeline */}
-      <div
-        ref={ref}
-        className="relative mx-auto max-w-7xl pb-12"
-      >
+      <div ref={ref} className="relative mx-auto max-w-7xl pb-12">
         {data.map((item, index) => (
           <div
             key={index}

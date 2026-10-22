@@ -3,7 +3,7 @@ import { useState } from "react";
 function Profile() {
   const [skillInput, setSkillInput] = useState("");
 
-  const [skills, setSkills] = useState(() => {
+  const [skills, setSkills] = useState<string[]>(() => {
     const savedSkills = localStorage.getItem("jobTrackSkills");
 
     return savedSkills
@@ -40,7 +40,7 @@ function Profile() {
     setSkillInput("");
   }
 
-  function handleRemoveSkill(skillToRemove) {
+  function handleRemoveSkill(skillToRemove: string) {
     const updatedSkills = skills.filter(
       (skill) => skill !== skillToRemove
     );
@@ -84,10 +84,10 @@ function Profile() {
           <input
             type="text"
             value={skillInput}
-            onChange={(event) =>
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               setSkillInput(event.target.value)
             }
-            onKeyDown={(event) => {
+            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
               if (event.key === "Enter") {
                 handleAddSkill();
               }

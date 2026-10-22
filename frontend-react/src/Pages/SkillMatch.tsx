@@ -1,10 +1,22 @@
 import { useState } from "react";
 
+type SkillMatchResult = {
+  matchPercentage: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  preparationTopics: string[];
+};
+
+type SkillMatchResponse = {
+  matchResult: SkillMatchResult;
+  message?: string;
+};
+
 function SkillMatch() {
   const [jobDescription, setJobDescription] =
     useState("");
 
-  const [skills] = useState(() => {
+  const [skills]= useState<string[]>(() => {
     const savedSkills =
       localStorage.getItem("jobTrackSkills");
 
@@ -14,7 +26,7 @@ function SkillMatch() {
   });
 
   const [matchResult, setMatchResult] =
-    useState(null);
+    useState<SkillMatchResult | null>(null);
 
   const [loading, setLoading] =
     useState(false);
@@ -56,7 +68,7 @@ function SkillMatch() {
         }
       );
 
-      const data = await response.json();
+      const data = (await response.json()) as SkillMatchResponse;
 
       if (!response.ok) {
         throw new Error(
@@ -67,7 +79,7 @@ function SkillMatch() {
 
       setMatchResult(data.matchResult);
     } catch (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -132,7 +144,7 @@ function SkillMatch() {
         <textarea
           id="jobDescription"
           value={jobDescription}
-          onChange={(event) =>
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setJobDescription(event.target.value)
           }
           placeholder="Paste the job description here..."

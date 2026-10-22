@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import useApplications from "../hooks/useApplication";
+import type { JobStatus } from "../types/application";
 
 function Dashboard() {
   const { applications } = useApplications();
@@ -53,7 +54,7 @@ function Dashboard() {
     },
   ];
 
-  const statusStyle = {
+  const statusStyle: Record<JobStatus, string> = {
     applied: "bg-sky-50 text-sky-700 ring-sky-200",
     interview: "bg-amber-50 text-amber-700 ring-amber-200",
     offer: "bg-emerald-50 text-emerald-700 ring-emerald-200",

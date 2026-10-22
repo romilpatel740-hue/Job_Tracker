@@ -186,7 +186,13 @@ function About() {
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+type FeatureCardProps = {
+  icon: string;
+  title: string;
+  description: string;
+};
+
+function FeatureCard({ icon, title, description } : FeatureCardProps) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-white hover:shadow-md">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-lg font-bold text-indigo-600 shadow-sm ring-1 ring-slate-200">
@@ -204,7 +210,13 @@ function FeatureCard({ icon, title, description }) {
   );
 }
 
-function StepCard({ number, title, description }) {
+type StepCardProps = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+function StepCard({ number, title, description }: StepCardProps) {
   return (
     <div className="relative rounded-2xl border border-slate-200 p-5">
       <span className="text-xs font-black tracking-[0.15em] text-indigo-500">

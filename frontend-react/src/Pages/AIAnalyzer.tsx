@@ -1,8 +1,21 @@
 import { useState } from "react";
 
+type AIAnalysis = {
+  skills: string[];
+  keywords: string[];
+  experience: string;
+  aiSkills: string[];
+  preparationTopics: string[];
+};
+
+type AIAnalyzerResponse = {
+  analysis: AIAnalysis;
+  message?: string;
+};
+
 function AIAnalyzer() {
   const [jobDescription, setJobDescription] = useState("");
-  const [analysis, setAnalysis] = useState(null);
+  const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -30,7 +43,7 @@ function AIAnalyzer() {
         }
       );
 
-      const data = await response.json();
+      const data = (await response.json()) as AIAnalyzerResponse;
 
       if (!response.ok) {
         throw new Error(
@@ -41,7 +54,7 @@ function AIAnalyzer() {
 
       setAnalysis(data.analysis);
     } catch (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
