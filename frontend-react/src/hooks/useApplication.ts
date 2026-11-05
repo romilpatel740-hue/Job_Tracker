@@ -15,7 +15,6 @@ function useApplications() {
 
   const { applications } = context;
 
-
   function getApplicationById(id: string | undefined) {
     return applications.find(
       (app) => String(app._id) === String(id)

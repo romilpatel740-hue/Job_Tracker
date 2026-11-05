@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import useApplications from "../hooks/useApplication";
 import type { JobStatus, JobApplication } from "../types/application";
-
-type FilterStatus = "all" | JobStatus;
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../redux/store";
+import { setStatus } from "../redux/applicationFilterSlice";
 
 type SortOption =
   | "default"
@@ -23,8 +24,11 @@ type SortableApplication = JobApplication & {
 function Applications() {
   const { applications, deleteApplication, loading, error } = useApplications();
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortOption, setSortOption] = useState<SortOption>("default");
+  const reduxFilterStatus = useSelector(
+    (state: RootState) => state.applicationFilter.status,
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   const statusStyle: Record<JobStatus, StatusStyle> = {
     applied: {
@@ -53,8 +57,8 @@ function Applications() {
       app.role.toLowerCase().includes(searchText);
 
     const matchesStatus =
-      filterStatus === "all" ||
-      app.status.toLowerCase() === filterStatus.toLowerCase();
+      reduxFilterStatus === "all" ||
+      app.status.toLowerCase() === reduxFilterStatus.toLowerCase();
 
     return matchesSearch && matchesStatus;
   });
@@ -165,8 +169,8 @@ if (error) {
 
           {/* Status Filter */}
           <select
-            value={filterStatus}
-            onChange={(event) => setFilterStatus(event.target.value as FilterStatus)}
+            value={reduxFilterStatus}
+            onChange={(event) => dispatch(setStatus(event.target.value as "all" | JobStatus))}
             className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium !text-slate-700 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
           >
             <option value="all">All Statuses</option>
@@ -199,12 +203,12 @@ if (error) {
             {sortedApplications.length === 1 ? "application" : "applications"}
           </p>
 
-          {(search || filterStatus !== "all" || sortOption !== "default") && (
+          {(search || reduxFilterStatus !== "all" || sortOption !== "default") && (
             <button
               type="button"
               onClick={() => {
                 setSearch("");
-                setFilterStatus("all");
+                dispatch(setStatus("all"));
                 setSortOption("default");
               }}
               className="text-xs font-semibold !text-indigo-600 transition hover:!text-indigo-700"
@@ -237,7 +241,7 @@ if (error) {
               type="button"
               onClick={() => {
                 setSearch("");
-                setFilterStatus("all");
+                dispatch(setStatus("all"));
                 setSortOption("default");
               }}
               className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold !text-slate-700 transition hover:bg-slate-50"

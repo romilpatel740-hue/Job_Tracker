@@ -20,16 +20,14 @@ const applicationSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      enum: ["applied", "interview", "offer", "rejected"],
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const Application = mongoose.model(
-  "Application",
-  applicationSchema
-);
+const Application = mongoose.model("Application", applicationSchema);
 
 export default Application;

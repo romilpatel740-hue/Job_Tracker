@@ -1,5 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 import "./index.css";
 import App from "./App";
 import { ApplicationProvider } from "./context/ApplicationContext";
@@ -12,8 +14,10 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <ApplicationProvider>
-      <App />
-    </ApplicationProvider>
+    <Provider store={store}>
+      <ApplicationProvider>
+        <App />
+      </ApplicationProvider>
+    </Provider>
   </StrictMode>,
 );
