@@ -1,8 +1,6 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { JobApplication } from "../types/application";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-const API_URL = "https://jobtracker-backend-eiaz.onrender.com/api/applications";
+import API from "../services/api"; // Import centralized Axios instance
 
 export const fetchApplications = createAsyncThunk<
   JobApplication[],
@@ -10,21 +8,12 @@ export const fetchApplications = createAsyncThunk<
   { rejectValue: string }
 >("applications/fetchApplications", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(API_URL);
-
-    if (!response.ok) {
-      return rejectWithValue("Failed to fetch applications");
-    }
-
-    const data: unknown = await response.json();
-
-    if (!Array.isArray(data)) {
-      return rejectWithValue("Invalid applications response");
-    }
-
-    return data as JobApplication[];
-  } catch {
-    return rejectWithValue("Unable to connect to the server");
+    // Axios automatically uses the baseURL and injects the authorization token
+    const response = await API.get<JobApplication[]>("/applications");
+    return response.data;
+  } catch (error: any) {
+    const message = error.response?.data?.message || error.message || "Unable to connect to the server";
+    return rejectWithValue(message);
   }
 });
 
@@ -44,26 +33,26 @@ const applicationsSlice = createSlice({
   name: "applications",
   initialState,
   reducers: {
-  addApplication: (state, action: PayloadAction<JobApplication>) => {
-    state.applications.push(action.payload);
-  },
+    addApplication: (state, action: PayloadAction<JobApplication>) => {
+      state.applications.push(action.payload);
+    },
 
-  updateApplication: (state, action: PayloadAction<JobApplication>) => {
-    const index = state.applications.findIndex(
-      (app) => app._id === action.payload._id,
-    );
+    updateApplication: (state, action: PayloadAction<JobApplication>) => {
+      const index = state.applications.findIndex(
+        (app) => app._id === action.payload._id,
+      );
 
-    if (index !== -1) {
-      state.applications[index] = action.payload;
-    }
-  },
+      if (index !== -1) {
+        state.applications[index] = action.payload;
+      }
+    },
 
-  deleteApplication: (state, action: PayloadAction<string>) => {
-    state.applications = state.applications.filter(
-      (app) => app._id !== action.payload,
-    );
+    deleteApplication: (state, action: PayloadAction<string>) => {
+      state.applications = state.applications.filter(
+        (app) => app._id !== action.payload,
+      );
+    },
   },
-},
 
   extraReducers: (builder) => {
     builder

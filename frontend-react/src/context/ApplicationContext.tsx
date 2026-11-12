@@ -1,4 +1,3 @@
-
 import {
   createContext,
   useEffect,
@@ -8,6 +7,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../redux/store";
+import API from "../services/api"; // Import your centralized Axios instance
 
 import {
   addApplication as addApplicationToStore,
@@ -17,7 +17,6 @@ import {
 } from "../redux/applicationsSlice";
 
 import type {
-  ApiErrorResponse,
   ApplicationApiResponse,
   ApplicationContextValue,
   NewJobApplication,
@@ -26,9 +25,6 @@ import type {
 const ApplicationContext = createContext<
   ApplicationContextValue | undefined
 >(undefined);
-
-const API_URL =
-  "https://jobtracker-backend-eiaz.onrender.com/api/applications";
 
 function ApplicationProvider({ children }: { children: ReactNode }) {
   // Redux dispatch
@@ -41,7 +37,7 @@ function ApplicationProvider({ children }: { children: ReactNode }) {
     error: reduxError,
   } = useSelector((state: RootState) => state.applications);
 
-  // Local state for POST, PUT and DELETE
+  // Local state for mutations
   const [mutationLoading, setMutationLoading] = useState(false);
   const [mutationError, setMutationError] = useState("");
 
@@ -50,7 +46,7 @@ function ApplicationProvider({ children }: { children: ReactNode }) {
     reduxDispatch(fetchApplications());
   }, [reduxDispatch]);
 
-  // POST application
+  // POST application using Axios (automatically attaches token & base URL)
   async function addApplication(
     application: NewJobApplication,
   ): Promise<void> {
@@ -58,28 +54,9 @@ function ApplicationProvider({ children }: { children: ReactNode }) {
       setMutationLoading(true);
       setMutationError("");
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(application),
-      });
+      const response = await API.post<ApplicationApiResponse>("/applications", application);
 
-      const data: ApplicationApiResponse | ApiErrorResponse =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to create application",
-        );
-      }
-
-      if (!("application" in data)) {
-        throw new Error("Invalid application response");
-      }
-
-      reduxDispatch(addApplicationToStore(data.application));
+      reduxDispatch(addApplicationToStore(response.data.application));
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -102,28 +79,9 @@ function ApplicationProvider({ children }: { children: ReactNode }) {
       setMutationLoading(true);
       setMutationError("");
 
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      });
+      const response = await API.put<ApplicationApiResponse>(`/applications/${id}`, updatedData);
 
-      const data: ApplicationApiResponse | ApiErrorResponse =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to update application",
-        );
-      }
-
-      if (!("application" in data)) {
-        throw new Error("Invalid application response");
-      }
-
-      reduxDispatch(updateApplicationInStore(data.application));
+      reduxDispatch(updateApplicationInStore(response.data.application));
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -143,17 +101,7 @@ function ApplicationProvider({ children }: { children: ReactNode }) {
       setMutationLoading(true);
       setMutationError("");
 
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
-
-      const data: ApiErrorResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to delete application",
-        );
-      }
+      await API.delete(`/applications/${id}`);
 
       reduxDispatch(deleteApplicationFromStore(id));
     } catch (error: unknown) {

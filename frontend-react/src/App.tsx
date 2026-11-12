@@ -42,7 +42,6 @@ function App() {
   return (
     <div className="min-h-screen text-slate-900 bg-slate-50">
       <BrowserRouter>
-        {/* Pass user info or logout handler to Navbar if needed */}
         <Navbar title="JobTrack" onLogout={handleLogout} />
 
         <main className="mx-auto min-h-[calc(100vh-73px)] max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
@@ -62,7 +61,7 @@ function App() {
 
             <Route path="/ai-analyzer" element={<AIAnalyzer />} />
 
-            <Route path="/profile" element={<Profile user={user} onLogout={handleLogout} />} />
+            <Route path="/profile" element={<Profile />} />
 
             <Route path="/skill-match" element={<SkillMatch />} />
 

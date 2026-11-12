@@ -1,10 +1,11 @@
 import Application from "../models/Application.js";
 import mongoose from "mongoose";
 
-// GET all applications
+// GET all applications for the logged-in user
 export async function getApplications(req, res) {
   try {
-    const applications = await Application.find();
+    // Scope query to the authenticated user's ID
+    const applications = await Application.find({ userId: req.user.userId });
 
     res.status(200).json(applications);
   } catch (error) {
@@ -15,7 +16,7 @@ export async function getApplications(req, res) {
   }
 }
 
-// GET one application
+// GET one application by ID (ensuring it belongs to the user)
 export async function getApplicationById(req, res) {
   try {
     const { id } = req.params;
@@ -26,7 +27,10 @@ export async function getApplicationById(req, res) {
       });
     }
 
-    const application = await Application.findById(id);
+    const application = await Application.findOne({
+      _id: id,
+      userId: req.user.userId,
+    });
 
     if (!application) {
       return res.status(404).json({
@@ -46,12 +50,7 @@ export async function getApplicationById(req, res) {
 // POST create application
 export async function createApplication(req, res) {
   try {
-    const {
-      company,
-      role,
-      location,
-      status,
-    } = req.body;
+    const { company, role, location, status } = req.body;
 
     if (!company || !role || !location || !status) {
       return res.status(400).json({
@@ -64,6 +63,7 @@ export async function createApplication(req, res) {
       role,
       location,
       status,
+      userId: req.user.userId, // Attach authenticated user's ID
     });
 
     res.status(201).json({
@@ -89,12 +89,7 @@ export async function updateApplication(req, res) {
       });
     }
 
-    const {
-      company,
-      role,
-      location,
-      status,
-    } = req.body;
+    const { company, role, location, status } = req.body;
 
     if (!company || !role || !location || !status) {
       return res.status(400).json({
@@ -102,20 +97,12 @@ export async function updateApplication(req, res) {
       });
     }
 
-    const updatedApplication =
-      await Application.findByIdAndUpdate(
-        id,
-        {
-          company,
-          role,
-          location,
-          status,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+    // Find and update only if it belongs to the logged-in user
+    const updatedApplication = await Application.findOneAndUpdate(
+      { _id: id, userId: req.user.userId },
+      { company, role, location, status },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedApplication) {
       return res.status(404).json({
@@ -146,8 +133,11 @@ export async function deleteApplication(req, res) {
       });
     }
 
-    const deletedApplication =
-      await Application.findByIdAndDelete(id);
+    // Delete only if it belongs to the logged-in user
+    const deletedApplication = await Application.findOneAndDelete({
+      _id: id,
+      userId: req.user.userId,
+    });
 
     if (!deletedApplication) {
       return res.status(404).json({

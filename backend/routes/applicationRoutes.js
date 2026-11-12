@@ -7,8 +7,13 @@ import {
   updateApplication,
   deleteApplication,
 } from "../controllers/applicationControllers.js";
+import { protect } from "../middleware/authMiddleware.js";
 
+// 1. Initialize router FIRST
 const router = express.Router();
+
+// 2. Apply the protect middleware to all routes in this router
+router.use(protect);
 
 // GET all applications
 router.get("/", getApplications);

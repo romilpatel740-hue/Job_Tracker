@@ -2,9 +2,10 @@ import { NavLink } from "react-router-dom";
 
 type NavbarProps = {
   title: string;
+  onLogout: () => void;
 };
 
-function Navbar({ title }: NavbarProps) {
+function Navbar({ title, onLogout }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950 shadow-lg shadow-slate-950/5 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -55,6 +56,13 @@ function Navbar({ title }: NavbarProps) {
               {label}
             </NavLink>
           ))}
+          <button
+            type="button"
+            onClick={onLogout}
+            className="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white sm:px-4 sm:text-sm"
+          >
+            Log out
+          </button>
         </div>
       </div>
     </nav>

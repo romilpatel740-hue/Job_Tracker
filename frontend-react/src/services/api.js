@@ -4,11 +4,14 @@ const API = axios.create({
   baseURL: "http://localhost:5001/api",
 });
 
-// Automatically attach JWT token if available
 API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+  try {
+    const token = localStorage.getItem("token");
+    if (token) {
+      req.headers.Authorization = "Bearer " + token;
+    }
+  } catch (error) {
+    console.warn("Could not access localStorage for auth token:", error);
   }
   return req;
 });
