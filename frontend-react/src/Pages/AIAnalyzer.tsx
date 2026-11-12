@@ -40,21 +40,21 @@ function AIAnalyzer() {
           body: JSON.stringify({
             jobDescription,
           }),
-        }
+        },
       );
 
       const data = (await response.json()) as AIAnalyzerResponse;
 
       if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Failed to analyze job description"
-        );
+        throw new Error(data.message || "Failed to analyze job description");
       }
-
-      setAnalysis(data.analysis);
+      setAnalysis(
+        data.analysis || (data.skills ? (data as unknown as AIAnalysis) : null),
+      );
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An unexpected error occurred");
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      );
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,6 @@ function AIAnalyzer() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-
       {/* Page Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
@@ -70,15 +69,13 @@ function AIAnalyzer() {
         </h1>
 
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-          Paste a job description and let AI identify the
-          important skills, keywords, AI requirements, and
-          preparation topics.
+          Paste a job description and let AI identify the important skills,
+          keywords, AI requirements, and preparation topics.
         </p>
       </div>
 
       {/* Input Section */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
         <label
           htmlFor="jobDescription"
           className="mb-2 block text-sm font-semibold text-slate-800"
@@ -89,19 +86,15 @@ function AIAnalyzer() {
         <textarea
           id="jobDescription"
           value={jobDescription}
-          onChange={(event) =>
-            setJobDescription(event.target.value)
-          }
+          onChange={(event) => setJobDescription(event.target.value)}
           placeholder="Paste the job description here..."
           rows={10}
           className="w-full resize-y rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
         />
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
           <p className="text-xs text-slate-500">
-            AI will analyze the job requirements and return
-            structured results.
+            AI will analyze the job requirements and return structured results.
           </p>
 
           <button
@@ -109,11 +102,8 @@ function AIAnalyzer() {
             disabled={loading}
             className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading
-              ? "Analyzing..."
-              : "Analyze with AI"}
+            {loading ? "Analyzing..." : "Analyze with AI"}
           </button>
-
         </div>
       </div>
 
@@ -132,8 +122,7 @@ function AIAnalyzer() {
           </p>
 
           <p className="mt-1 text-xs text-blue-600">
-            This may take a few seconds because the AI model
-            is running locally.
+            This may take a few seconds because the AI model is running locally.
           </p>
         </div>
       )}
@@ -141,21 +130,16 @@ function AIAnalyzer() {
       {/* Results */}
       {analysis && (
         <div className="space-y-6">
-
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
-              AI Analysis
-            </h2>
+            <h2 className="text-2xl font-bold text-slate-900">AI Analysis</h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              Important information extracted from the job
-              description.
+              Important information extracted from the job description.
             </p>
           </div>
 
           {/* Skills + Keywords */}
           <div className="grid gap-6 md:grid-cols-2">
-
             {/* Skills */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">
@@ -191,12 +175,10 @@ function AIAnalyzer() {
                 ))}
               </div>
             </div>
-
           </div>
 
           {/* Experience + AI Skills */}
           <div className="grid gap-6 md:grid-cols-2">
-
             {/* Experience */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">
@@ -231,40 +213,33 @@ function AIAnalyzer() {
                 </p>
               )}
             </div>
-
           </div>
 
           {/* Preparation Topics */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-
             <h3 className="text-lg font-semibold text-slate-900">
               Preparation Topics
             </h3>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {analysis.preparationTopics.map(
-                (topic, index) => (
-                  <div
-                    key={topic}
-                    className="flex items-start gap-3 rounded-xl bg-slate-50 p-4"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
-                      {index + 1}
-                    </span>
+              {analysis.preparationTopics.map((topic, index) => (
+                <div
+                  key={topic}
+                  className="flex items-start gap-3 rounded-xl bg-slate-50 p-4"
+                >
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                    {index + 1}
+                  </span>
 
-                    <span className="text-sm font-medium text-slate-700">
-                      {topic}
-                    </span>
-                  </div>
-                )
-              )}
+                  <span className="text-sm font-medium text-slate-700">
+                    {topic}
+                  </span>
+                </div>
+              ))}
             </div>
-
           </div>
-
         </div>
       )}
-
     </div>
   );
 }

@@ -109,7 +109,10 @@ ${jobDescription}
       });
     }
 
-    res.status(200).json(aiResult);
+        res.status(200).json({
+      analysis: aiResult,
+      ...aiResult,
+    });
   } catch (error) {
     console.error(
       "Job description analysis error:",

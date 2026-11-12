@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import jwtSecret from "../config/jwt.js";
 
 export const protect = (req, res, next) => {
   let token;
@@ -13,7 +14,7 @@ export const protect = (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
 
       // Verify token using secret
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, jwtSecret);
 
       // Attach user object to request (handling different payload naming conventions)
       req.user = {
@@ -21,17 +22,23 @@ export const protect = (req, res, next) => {
       };
 
       if (!req.user.userId) {
-        return res.status(401).json({ message: "Not authorized, token payload invalid" });
+        return res
+          .status(401)
+          .json({ message: "Not authorized, token payload invalid" });
       }
 
       return next();
     } catch (error) {
       console.error("JWT Verification Failed Details:", error.message); // <-- Add this
-      return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
+      return res
+        .status(401)
+        .json({ message: `Not authorized, token failed: ${error.message}` });
     }
   }
 
   if (!token) {
-    return res.status(401).json({ message: "Not authorized, no token provided" });
+    return res
+      .status(401)
+      .json({ message: "Not authorized, no token provided" });
   }
 };

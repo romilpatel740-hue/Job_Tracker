@@ -13,7 +13,11 @@ interface AuthProps {
 
 export default function Auth({ onLoginSuccess }: AuthProps) {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,8 +25,8 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
     setError("");
     try {
       const endpoint = isLogin ? "/auth/login" : "/auth/register";
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password } 
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
         : formData;
 
       const { data } = await API.post(endpoint, payload);
@@ -36,7 +40,10 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         setIsLogin(true);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "An error occurred during authentication.");
+      const serverMessage =
+        err.response?.data?.message ||
+        err.response?.data?.errors?.map((e: any) => e.message).join(", ");
+      setError(serverMessage || "An error occurred during authentication.");
     }
   };
 
@@ -51,7 +58,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         <h2 className="text-3xl font-bold text-white text-center mb-2">
           {isLogin ? "Welcome Back" : "Create Account"}
         </h2>
-        <p className="text-gray-400 text-center mb-6">JobTracker Portfolio App</p>
+        <p className="text-gray-400 text-center mb-6">
+          JobTracker Portfolio App
+        </p>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded mb-4 text-sm">
@@ -62,13 +71,17 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="text-gray-300 text-sm block mb-1">Username</label>
+              <label className="text-gray-300 text-sm block mb-1">
+                Username
+              </label>
               <input
                 type="text"
                 required
                 className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
                 value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, username: e.target.value })
+                }
               />
             </div>
           )}
@@ -79,7 +92,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
               required
               className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
           </div>
           <div>
@@ -89,7 +104,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
               required
               className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-indigo-500"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
           </div>
 
@@ -106,7 +123,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
             onClick={handleToggleMode}
             className="text-indigo-400 text-sm hover:underline"
           >
-            {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+            {isLogin
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Sign in"}
           </button>
         </div>
       </div>

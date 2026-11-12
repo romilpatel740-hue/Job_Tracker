@@ -1,6 +1,7 @@
 import User from "../models/user.model.js"; // Adjust the path to your User model if needed
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import jwtSecret from "../config/jwt.js";
 
 // Register Controller
 export const registerUser = async (req, res) => {
@@ -52,7 +53,7 @@ export const loginUser = async (req, res) => {
     }
 
     // Create JWT token (optional/if configured)
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || "fallback_secret", {
+    const token = jwt.sign({ userId: user._id }, jwtSecret, {
       expiresIn: "7d",
     });
 
