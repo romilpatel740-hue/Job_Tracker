@@ -8,10 +8,9 @@ type AIAnalysis = {
   preparationTopics: string[];
 };
 
-type AIAnalyzerResponse = {
-  analysis: AIAnalysis;
-  message?: string;
-};
+type AIAnalyzerResponse =
+  | { analysis: AIAnalysis; message?: string }
+  | (AIAnalysis & { message?: string });
 
 function AIAnalyzer() {
   const [jobDescription, setJobDescription] = useState("");
@@ -48,9 +47,7 @@ function AIAnalyzer() {
       if (!response.ok) {
         throw new Error(data.message || "Failed to analyze job description");
       }
-      setAnalysis(
-        data.analysis || (data.skills ? (data as unknown as AIAnalysis) : null),
-      );
+      setAnalysis("analysis" in data ? data.analysis : data);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "An unexpected error occurred",
