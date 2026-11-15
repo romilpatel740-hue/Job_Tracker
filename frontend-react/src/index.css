@@ -67,6 +67,7 @@ body {
 
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  letter-spacing: 0.005em;
 }
 
 #vanta-globe-container {
@@ -167,7 +168,7 @@ img {
 
 @layer utilities {
   #vanta-globe-container main .bg-white {
-    background-color: rgb(17 24 39 / 0.82);
+    background-color: rgb(17 24 39 / 0.92);
   }
 
   #vanta-globe-container main [class~="bg-white"][class~="!text-slate-950"] {
@@ -178,7 +179,7 @@ img {
   #vanta-globe-container main .bg-slate-50,
   #vanta-globe-container main [class~="bg-slate-50/60"],
   #vanta-globe-container main [class~="bg-slate-50/70"] {
-    background-color: rgb(255 255 255 / 0.045);
+    background-color: rgb(255 255 255 / 0.06);
   }
 
   #vanta-globe-container main .bg-slate-100 {
@@ -211,6 +212,7 @@ img {
 
   #vanta-globe-container main .text-indigo-600,
   #vanta-globe-container main .text-indigo-700,
+  #vanta-globe-container .text-indigo-400,
   #vanta-globe-container main .text-blue-600,
   #vanta-globe-container main .text-blue-700,
   #vanta-globe-container main [class~="!text-indigo-600"],
@@ -253,30 +255,34 @@ img {
   }
 
   #vanta-globe-container main .text-sky-700,
-  #vanta-globe-container main .text-sky-800 {
-    color: #7dd3fc;
+  #vanta-globe-container main .text-sky-800,
+  #vanta-globe-container main [class~="!text-sky-700"] {
+    color: #7dd3fc !important;
   }
 
-  #vanta-globe-container main .text-amber-700 {
-    color: #fcd34d;
+  #vanta-globe-container main .text-amber-700,
+  #vanta-globe-container main [class~="!text-amber-700"] {
+    color: #fcd34d !important;
   }
 
   #vanta-globe-container main .text-emerald-700,
   #vanta-globe-container main .text-green-600,
-  #vanta-globe-container main .text-green-800 {
-    color: #6ee7b7;
+  #vanta-globe-container main .text-green-800,
+  #vanta-globe-container main [class~="!text-emerald-700"] {
+    color: #6ee7b7 !important;
   }
 
   #vanta-globe-container main .text-rose-700,
   #vanta-globe-container main .text-red-600,
   #vanta-globe-container main .text-red-700,
-  #vanta-globe-container main .text-red-800 {
-    color: #fda4af;
+  #vanta-globe-container main .text-red-800,
+  #vanta-globe-container main [class~="!text-rose-700"] {
+    color: #fda4af !important;
   }
 
   #vanta-globe-container main .text-purple-700,
   #vanta-globe-container main .text-purple-900 {
-    color: #e9a8ff;
+    color: #e9a8ff !important;
   }
 
   #vanta-globe-container main .border-indigo-100,
@@ -290,6 +296,22 @@ img {
   #vanta-globe-container main .border-red-200,
   #vanta-globe-container main .border-purple-200 {
     border-color: rgb(255 255 255 / 0.12);
+  }
+
+  #vanta-globe-container main .ring-sky-200 {
+    --tw-ring-color: rgb(14 165 233 / 0.28);
+  }
+
+  #vanta-globe-container main .ring-amber-200 {
+    --tw-ring-color: rgb(245 158 11 / 0.28);
+  }
+
+  #vanta-globe-container main .ring-emerald-200 {
+    --tw-ring-color: rgb(16 185 129 / 0.28);
+  }
+
+  #vanta-globe-container main .ring-rose-200 {
+    --tw-ring-color: rgb(244 63 94 / 0.28);
   }
 
   #vanta-globe-container main [class~="from-white"] {
@@ -310,6 +332,10 @@ img {
   #vanta-globe-container .bg-indigo-600,
   #vanta-globe-container .bg-blue-600 {
     background-color: #e83264;
+  }
+
+  #vanta-globe-container .hover\:bg-indigo-500:hover {
+    background-color: #f43f70;
   }
 
   #vanta-globe-container .hover\:bg-indigo-700:hover,

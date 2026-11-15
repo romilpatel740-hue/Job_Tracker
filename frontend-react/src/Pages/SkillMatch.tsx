@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
+import API from "../services/api";
 
 type SkillMatchResult = {
   matchPercentage: number;
@@ -52,34 +54,18 @@ function SkillMatch() {
       setError("");
       setMatchResult(null);
 
-      const response = await fetch(
-        "https://jobtracker-backend-eiaz.onrender.com/api/ai/match-skills",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            jobDescription,
-            userSkills: skills,
-          }),
-        }
+      const { data } = await API.post<SkillMatchResponse>(
+        "/ai/match-skills",
+        { jobDescription, userSkills: skills },
       );
-
-      const data = (await response.json()) as SkillMatchResponse;
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Failed to match skills"
-        );
-      }
-
       setMatchResult(data.matchResult);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "An unexpected error occurred");
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message || error.message
+        : error instanceof Error
+          ? error.message
+          : "An unexpected error occurred";
+      setError(message);
     } finally {
       setLoading(false);
     }

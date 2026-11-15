@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
+import API from "../services/api";
 
 type AIAnalysis = {
   skills: string[];
@@ -29,29 +31,17 @@ function AIAnalyzer() {
       setError("");
       setAnalysis(null);
 
-      const response = await fetch(
-        "https://jobtracker-backend-eiaz.onrender.com/api/ai/analyze",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            jobDescription,
-          }),
-        },
-      );
-
-      const data = (await response.json()) as AIAnalyzerResponse;
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to analyze job description");
-      }
+      const { data } = await API.post<AIAnalyzerResponse>("/ai/analyze", {
+        jobDescription,
+      });
       setAnalysis("analysis" in data ? data.analysis : data);
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      );
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message || error.message
+        : error instanceof Error
+          ? error.message
+          : "An unexpected error occurred";
+      setError(message);
     } finally {
       setLoading(false);
     }

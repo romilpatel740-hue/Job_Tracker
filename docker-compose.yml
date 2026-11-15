@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      MONGO_URI: ${MONGO_URI:?Set MONGO_URI in the project .env file}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the project .env file}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY in the project .env file}
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend-react
+      args:
+        VITE_API_URL: /api
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
