@@ -92,10 +92,10 @@ docker-compose.yml
 
 ## Screenshots
 
-![alt text](<Screenshot (181).png>)
-![alt text](<Screenshot (182).png>)
-![alt text](<Screenshot (186).png>) 
-![alt text](<Screenshot (185).png>)
+![JobTracker dashboard](Screenshot%20%28181%29.png)
+![Job applications list](Screenshot%20%28182%29.png)
+![AI job description analyzer](Screenshot%20%28185%29.png)
+![AI analysis results](Screenshot%20%28186%29.png)
 
 ## Security
 
